@@ -15,8 +15,8 @@ Returns links to images of live traffic conditions along expressways and Woodlan
 
 #### API Example value
 
-
-```{
+```
+{
   "api_info": {
     "status": "healthy"
   },
@@ -38,5 +38,6 @@ Returns links to images of live traffic conditions along expressways and Woodlan
       ]
     }
   ]
-}```
+}
+```
 

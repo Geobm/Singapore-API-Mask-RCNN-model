@@ -9,6 +9,9 @@ import datetime
 import itertools
 import dropbox
 import sys
+import os 
+import csv
+
 #Function to upload a file to dropbox
 def uploadToDropbox(): 
     dbx = dropbox.Dropbox('***TOKEN***') #Generate you access token with OAuth guide from dropbox developers documentation
@@ -37,21 +40,15 @@ def getURLS(date_format):
             data = requests.get(endpoint).json()
             cam_list = extract_values(data,'camera_id')#Extract values as lists
             images_list = extract_values(data, 'image')#Extract values as lists
-            
-            #write URL images into csv 
-            with open("C:/Users/Issstezac1/Desktop/DropboxTest/test.txt","a") as f:
-                #f.write(endpoint)
-                for item in images_list:
-                    f.write("%s,\n" % item)
-                    
-            for i in range(len(cam_list)): #Merge camera's id and correspondent image into a list
-                if i % 2 == 0:
-                    list1 = cam_list
-                    list2 = images_list
-                    for n in range(len(list1)):
-                        combined_list.append([list1[n],list2[n]])
-            #print(combined_list)
-               
+
+         #Merge camera's id and correspondent image into a list. Variable to use later
+        combined_list.append([list(pair) for pair in zip(cam_list, images_list)]) 
+        
+        with open("C:/Users/Issstezac1/Desktop/DropboxTest/test.csv","a", newline='') as f:
+            w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            w.writerow(cam_list)
+            w.writerow(images_list)
+           
 #Function to extract parameters from JSON
 def extract_values(obj, key):
     #Pull all values of specified key from nested JSON.
@@ -73,23 +70,20 @@ def extract_values(obj, key):
     results = extract(obj, arr, key)
     return results
 
-
 if __name__ == "__main__":    
     string_date_list = []   
-    combined_list=[]
-    
+    combined_list=[]    
     #Generate timestamps every N minutes. Parameters can be modified  
-    initial_time = datetime.datetime(2020, 1, 1, 0, 0)
-    final_time = datetime.datetime(2020, 1, 2, 0, 0)
-    delta = datetime.timedelta(minutes=360) #6 hours delta
+    initial_time = datetime.datetime(2020, 2, 1, 0, 0)
+    final_time = datetime.datetime(2020, 2, 2, 0, 0)
+    delta = datetime.timedelta(minutes=1440) #24 hours delta = 1 image per camera
     times = []
     
     while initial_time < final_time:
         times.append(initial_time)
         initial_time += delta
-    
-    #Convert datetime objects to string list     
-    for i in range(len(times)):
+     
+    for i in range(len(times)): #Convert datetime objects to string list    
         string_date_list.append((times[i].strftime('%Y/%m/%dT%H:%M:%S')))
     #print(string_date_list)
     getURLS(string_date_list)

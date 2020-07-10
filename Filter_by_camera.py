@@ -2,19 +2,17 @@
 """
 Created on Fri Jul  3 16:30:44 2020
 
-@author: Issstezac1
+@author: Geovani BM
 """
 
-
 import requests
-import pandas as pd
 import csv
 import datetime
 
 def getURLS(date_format):
     #Filtrate by specific camera
-    req_camera_id = '1701'
-    global string_date_list,times
+    req_camera_id = '1503'
+    global times
     image=[]
     time =[]
     for i in range(len(date_format)):
@@ -31,12 +29,10 @@ def getURLS(date_format):
                         wanted_cam.append(camera_id)
                         wanted_url.append(image)
                         time.append(cam['timestamp'])
-    
-    for i in range(len(date_format)):
-        print(times[i])
-        with open('C:/Users/Issstezac1/Desktop/DropboxTest/First.csv', 'w',  newline='') as f:
-            writer = csv.writer(f)
-            writer.writerows(zip(wanted_cam, wanted_url))
+                        print(times[i])
+                        with open('C:/Users/Issstezac1/Desktop/DropboxTest/First.csv', 'w',  newline='') as f:
+                            writer = csv.writer(f)
+                            writer.writerows(zip(wanted_cam, wanted_url,times))
              
 
 if __name__ == "__main__":    

@@ -15,10 +15,6 @@ def getURLS(date_format):
     global times
     image=[]
     time =[]
-    header = ['Cam_id','Image','Timestamp_sg_time']
-    with open('/home/sutd/Downloads/Wed11-13-19.csv', 'w',  newline='') as f:  #Choose your own path
-        writer = csv.writer(f) 
-        writer.writerow(list(header))
     for i in range(len(date_format)):
         url_date = date_format[i].replace('/','-') #Adjust timestamps to correct url format
         endpoint = "https://api.data.gov.sg/v1/transport/traffic-images?date_time="+url_date
@@ -34,9 +30,12 @@ def getURLS(date_format):
                         wanted_url.append(image)
                         time.append(cam['timestamp'])
                         print(times[i])
-                        with open('/home/sutd/Downloads/Wed11-13-19','a',newline='') as f: #Choose your own path
+                        with open('/home/sutd/Downloads/cam1701/Wed11-13-19.csv','w',newline='') as f: #Choose your own path
                             writer = csv.writer(f)
-                            writer.writerows(zip(wanted_cam, wanted_url,times))
+                            writer.writerows(zip(wanted_cam, wanted_url, times))
+    df = pd.read_csv('/home/sutd/Downloads/cam1701/Wed11-13-19.csv', header=None)
+    df.rename(columns={0: 'Cam_id', 1: 'Image', 2: 'Timestamp_sg_time'}, inplace=True)
+    df.to_csv('/home/sutd/Downloads/cam1701/Wed11-13-19.csv', index=False) # save csv file
             
 if __name__ == "__main__":    
     string_date_list = []   
@@ -57,4 +56,3 @@ if __name__ == "__main__":
     for i in range(len(times)): #Convert datetime objects to string list    
         string_date_list.append((times[i].strftime('%Y/%m/%dT%H:%M:%S')))
     getURLS(string_date_list)
-    

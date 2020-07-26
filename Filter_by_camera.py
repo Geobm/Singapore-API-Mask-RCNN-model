@@ -4,17 +4,21 @@ Created on Fri Jul  3 16:30:44 2020
 
 @author: Geovani BM
 """
-
 import requests
 import csv
 import datetime
+import pandas as pd
 
 def getURLS(date_format):
     #Filtrate by specific camera
-    req_camera_id = '1503'
+    req_camera_id = '1701'
     global times
     image=[]
     time =[]
+    header = ['Cam_id','Image','Timestamp_sg_time']
+    with open('/home/sutd/Downloads/Wed11-13-19.csv', 'w',  newline='') as f:  #Choose your own path
+        writer = csv.writer(f) 
+        writer.writerow(list(header))
     for i in range(len(date_format)):
         url_date = date_format[i].replace('/','-') #Adjust timestamps to correct url format
         endpoint = "https://api.data.gov.sg/v1/transport/traffic-images?date_time="+url_date
@@ -24,17 +28,16 @@ def getURLS(date_format):
             for item in data['items']:
                 for cam in item['cameras']:
                     camera_id = cam['camera_id']
-                    if camera_id == req_camera_id:
+                    if camera_id == req_camera_id:	
                         image = cam['image']
                         wanted_cam.append(camera_id)
                         wanted_url.append(image)
                         time.append(cam['timestamp'])
                         print(times[i])
-                        with open('C:/Users/Issstezac1/Desktop/DropboxTest/First.csv', 'w',  newline='') as f:
+                        with open('/home/sutd/Downloads/Wed11-13-19','a',newline='') as f: #Choose your own path
                             writer = csv.writer(f)
                             writer.writerows(zip(wanted_cam, wanted_url,times))
-             
-
+            
 if __name__ == "__main__":    
     string_date_list = []   
     #Generate timestamps every N minutes. Parameters can be modified  
